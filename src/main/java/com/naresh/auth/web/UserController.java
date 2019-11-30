@@ -1,5 +1,8 @@
 package com.naresh.auth.web;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +14,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.naresh.auth.model.ProfileImages;
 import com.naresh.auth.model.User;
-import com.naresh.auth.model.UserAttempts;
+import com.naresh.auth.service.ProfileImagesStorageService;
 import com.naresh.auth.service.SecurityService;
 import com.naresh.auth.service.UserAttemptsService;
 import com.naresh.auth.service.UserService;
 import com.naresh.auth.validator.UserValidator;
 
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
 @Controller
 public class UserController {
 	@Autowired
@@ -34,6 +40,9 @@ public class UserController {
 
 	@Autowired
 	private UserValidator userValidator;
+	
+	@Autowired
+	private ProfileImagesStorageService profileImagesStorageService;
 	
 	@Autowired
 	private UserAttemptsService userAttemptService;
@@ -50,7 +59,7 @@ public class UserController {
 		userValidator.validate(userForm, bindingResult);
 
 		if (bindingResult.hasErrors()) {
-			return "registration";
+			return "login";
 		}
 
 		userService.save(userForm);
@@ -70,6 +79,7 @@ public class UserController {
 		if (logout != null)
 			model.addAttribute("message", "You have been logged out successfully.");
 
+		model.addAttribute("userForm", new User());
 		return "login";
 	}
 	
@@ -79,14 +89,26 @@ public class UserController {
     	return "admin1";
     }
     
-    @GetMapping("/profile")
+    @GetMapping("/profile1")
     public String profile() {
     	return "createProfile";
+    	
+    }
+    
+    @GetMapping("/uploadImage")
+    public ModelAndView index2(ModelAndView model) {
+    	List<ProfileImages> listProfileImages = profileImagesStorageService.getProfileImages();
+
+		model.addObject("listProfileImages", listProfileImages);
+		model.setViewName("uploadImage");
+    	return model;
     	
     }
 
 	@GetMapping({ "/", "/welcome" })
 	public String welcome(Model model) {
+		//Optionall<User> user=userService.findByUsername("naresh@gmail.com");
+		//System.out.println("Hi:"+user.getProfileImages());
 		return "welcome";
 	}
 

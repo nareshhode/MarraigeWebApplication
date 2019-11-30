@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -23,15 +24,20 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) throw new UsernameNotFoundException(username);
+    	Set<GrantedAuthority> grantedAuthorities=null;
+        Optional<User> user = userRepository.findByUsername(username);
+        if (!user.isPresent()) {
+        	throw new UsernameNotFoundException(username);
+		} else {
+       
 
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
-        for (Role role : user.getRoles()){
+        grantedAuthorities = new HashSet<GrantedAuthority>();
+        for (Role role : user.get().getRoles()){
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
+		}
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(), grantedAuthorities);
     }
     
    

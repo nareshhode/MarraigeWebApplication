@@ -19,6 +19,10 @@
         <h2>Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h2>
     </c:if>
   </div>
+  <div>
+  <h4 class="text-left"><a href="${contextPath}/profile1">Create Profile</a></h4>
+   <h4 class="text-left"><a href="${contextPath}/uploadImage">Upload Profile Images</a></h4>
+  </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
 </body>

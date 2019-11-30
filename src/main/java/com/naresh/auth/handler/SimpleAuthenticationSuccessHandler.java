@@ -28,7 +28,7 @@ private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 		authorities.forEach(authority -> {
 			if(authority.getAuthority().equals("USER")) {
 				try {
-					redirectStrategy.sendRedirect(arg0, arg1, "/profile");
+					redirectStrategy.sendRedirect(arg0, arg1, "/welcome");
 					return;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

@@ -8,14 +8,15 @@ public class PasswordValidator {
     private Pattern pattern;
     private Matcher matcher;
  
-    //private static final String PASSWORD_PATTERN = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,40})";
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,40}$";
  
-    public PasswordValidator(String pwdPattern) {
-        pattern = Pattern.compile(pwdPattern);
-    }
+   /* public PasswordValidator(String PASSWORD_PATTERN) {
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+    }*/
  
     public boolean validate(final String password) {
  
+    	pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
         return matcher.matches();
  

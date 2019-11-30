@@ -11,11 +11,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.naresh.auth.model.UserAttempts;
 import com.naresh.auth.service.UserAttemptsService;
 import com.naresh.auth.service.UserDetailsServiceImpl;
 
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
 @Component("authenticationProvider")
 public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider {
 

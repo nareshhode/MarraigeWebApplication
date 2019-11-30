@@ -1,6 +1,7 @@
 package com.naresh.auth.service;
 
 import java.util.HashSet;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -56,9 +57,11 @@ public class UserAttemptsServiceImpl implements UserAttemptsService {
 
 		if (user.getAttempts() + 1 >= MAX_ATTEMPTS) {
 			
-	        User user2=userService.findByUsername(username);
-	        user2.setAccountNonLocked(false);
-	        userRepository.save(user2);
+	        Optional<User> user2=userService.findByUsername(username);
+	        if(user2.isPresent()) {
+	        user2.get().setAccountNonLocked(false);
+	        userRepository.save(user2.get());
+	        }
 			
 			// throw exception
 			throw new LockedException("User Account is locked!");

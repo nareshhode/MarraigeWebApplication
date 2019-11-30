@@ -1,12 +1,15 @@
 package com.naresh.auth.validator;
 
-import com.naresh.auth.model.User;
-import com.naresh.auth.service.UserService;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import com.naresh.auth.model.User;
+import com.naresh.auth.service.UserService;
 
 @Component
 public class UserValidator implements Validator {
@@ -25,7 +28,9 @@ public class UserValidator implements Validator {
             errors.rejectValue("username", "Size.userForm.username");
         }
         */
-        if (userService.findByUsername(user.getUsername()) != null) {
+        Optional<User> userOpt=userService.findByUsername(user.getUsername());
+        
+        if (userOpt.isPresent()) {
             errors.rejectValue("username", "Duplicate.userForm.username");
         }
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
@@ -40,7 +45,7 @@ public class UserValidator implements Validator {
             errors.rejectValue("password", "Size.userForm.password");
         }
         
-        //check password contains atleast one lowercase character
+/*        //check password contains atleast one lowercase character
         PasswordValidator lowerCasePasswordValidator=new PasswordValidator("^(?=.*[a-z])");
         if (!lowerCasePasswordValidator.validate(user.getPassword())) {
             errors.rejectValue("password", "Lowercase.userForm.password");
@@ -62,11 +67,18 @@ public class UserValidator implements Validator {
         PasswordValidator specialCharacterPasswordValidator=new PasswordValidator("^(?=.*[@#$%])");
         if (!specialCharacterPasswordValidator.validate(user.getPassword())) {
             errors.rejectValue("password", "SpecialCharacter.userForm.password");
+        }*/
+        
+        PasswordValidator passwordValidator=new PasswordValidator();
+        if (!passwordValidator.validate(user.getPassword())) {
+            errors.rejectValue("password", "validation.userForm.password");
         }
 
         if (!user.getPasswordConfirm().equals(user.getPassword())) {
             errors.rejectValue("passwordConfirm", "Diff.userForm.passwordConfirm");
         }
+        
+        
         
         
     }
